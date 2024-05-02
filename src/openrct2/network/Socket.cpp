@@ -52,6 +52,9 @@
     #include <sys/ioctl.h>
     #include <sys/select.h>
     #include <sys/socket.h>
+    #ifdef __HAIKU__
+    #include <sys/sockio.h>
+    #endif
     #include <sys/time.h>
     #include <unistd.h>
     #include "../common.h"

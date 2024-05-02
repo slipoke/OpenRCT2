@@ -7,7 +7,7 @@
  * OpenRCT2 is licensed under the GNU General Public License version 3.
  *****************************************************************************/
 
-#if defined(__unix__) && !defined(__ANDROID__) && !defined(__APPLE__)
+#if (defined(__unix__) || defined(__HAIKU__)) && !defined(__ANDROID__) && !defined(__APPLE__)
 
 #    include <cstring>
 #    include <fnmatch.h>
@@ -21,6 +21,10 @@
 #        include <sys/param.h>
 #        include <sys/sysctl.h>
 #    endif // __FreeBSD__ || __NetBSD__
+#    if defined(__HAIKU__)
+#        include <libgen.h>
+#        include <kernel/image.h>
+#    endif // __HAIKU__
 #    if defined(__linux__)
 // for PATH_MAX
 #        include <linux/limits.h>
@@ -160,6 +164,16 @@ namespace Platform
         // There is no way to get the path name of a running executable.
         // If you are not using the port or package, you may have to change this line!
         strlcpy(exePath, "/usr/local/bin/", sizeof(exePath));
+#    elif defined(__HAIKU__)
+        int32_t cookie = 0;
+        image_info info;
+        while (get_next_image_info(B_CURRENT_TEAM, &cookie, &info) == B_OK)
+        {
+            if (info.type != B_APP_IMAGE)
+                continue;
+
+            strlcpy(exePath, dirname(realpath(info.name, nullptr)), sizeof(exePath));
+        }
 #    else
 #        error "Platform does not support full path exe retrieval"
 #    endif

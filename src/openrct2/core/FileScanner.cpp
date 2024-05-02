@@ -13,7 +13,7 @@
 #    include <windows.h>
 #endif
 
-#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#if defined(__unix__) || defined(__HAIKU__) || (defined(__APPLE__) && defined(__MACH__))
 #    include <dirent.h>
 #    include <sys/stat.h>
 #    include <sys/types.h>
@@ -292,37 +292,32 @@ private:
     {
         DirectoryChild result;
         result.Name = std::string(node->d_name);
-        if (node->d_type == DT_DIR)
+
+        result.Type = DIRECTORY_CHILD_TYPE::DC_FILE;
+
+        // Get the full path of the file
+        auto path = Path::Combine(directory, node->d_name);
+
+        struct stat statInfo
         {
-            result.Type = DIRECTORY_CHILD_TYPE::DC_DIRECTORY;
-        }
-        else
+        };
+        int32_t statRes = stat(path.c_str(), &statInfo);
+        if (statRes != -1)
         {
-            result.Type = DIRECTORY_CHILD_TYPE::DC_FILE;
+            result.Size = statInfo.st_size;
+            result.LastModified = statInfo.st_mtime;
 
-            // Get the full path of the file
-            auto path = Path::Combine(directory, node->d_name);
-
-            struct stat statInfo
+            if (S_ISDIR(statInfo.st_mode))
             {
-            };
-            int32_t statRes = stat(path.c_str(), &statInfo);
-            if (statRes != -1)
-            {
-                result.Size = statInfo.st_size;
-                result.LastModified = statInfo.st_mtime;
-
-                if (S_ISDIR(statInfo.st_mode))
-                {
-                    result.Type = DIRECTORY_CHILD_TYPE::DC_DIRECTORY;
-                }
+                result.Type = DIRECTORY_CHILD_TYPE::DC_DIRECTORY;
             }
         }
+
         return result;
     }
 };
 
-#endif // defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#endif // defined(__unix__) || defined(__HAIKU__) || (defined(__APPLE__) && defined(__MACH__))
 
 std::unique_ptr<IFileScanner> Path::ScanDirectory(const std::string& pattern, bool recurse)
 {
