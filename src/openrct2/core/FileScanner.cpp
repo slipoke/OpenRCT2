@@ -253,7 +253,7 @@ private:
 
 #endif // _WIN32
 
-#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#if defined(__unix__) || defined(__HAIKU__) || (defined(__APPLE__) && defined(__MACH__))
 
 class FileScannerUnix final : public FileScannerBase
 {
@@ -323,7 +323,7 @@ std::unique_ptr<IFileScanner> Path::ScanDirectory(const std::string& pattern, bo
 {
 #ifdef _WIN32
     return std::make_unique<FileScannerWindows>(pattern, recurse);
-#elif defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+#elif defined(__unix__) || defined(__HAIKU__) || (defined(__APPLE__) && defined(__MACH__))
     return std::make_unique<FileScannerUnix>(pattern, recurse);
 #endif
 }

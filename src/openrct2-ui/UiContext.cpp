@@ -180,7 +180,7 @@ public:
         // exclusive fullscreen; we'll just set it to *not* be exclusive when asked to do so
         if (mode == FULLSCREEN_MODE::FULLSCREEN)
         {
-            mode = FULLSCREEN_MODE::FULLSCREEN_DESKTOP
+            mode = FULLSCREEN_MODE::FULLSCREEN_DESKTOP;
         }
 #endif
 
