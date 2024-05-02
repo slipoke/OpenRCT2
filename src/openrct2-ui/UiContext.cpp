@@ -175,6 +175,15 @@ public:
 
     void SetFullscreenMode(FULLSCREEN_MODE mode) override
     {
+#ifdef __HAIKU__
+        // Hack: Haiku doesn't support SDL_WINDOW_FULLSCREEN as it doesn't really have a concept of
+        // exclusive fullscreen; we'll just set it to *not* be exclusive when asked to do so
+        if (mode == FULLSCREEN_MODE::FULLSCREEN)
+        {
+            mode = FULLSCREEN_MODE::FULLSCREEN_DESKTOP
+        }
+#endif
+
         static constexpr int32_t _sdlFullscreenFlags[] = {
             0,
             SDL_WINDOW_FULLSCREEN,
