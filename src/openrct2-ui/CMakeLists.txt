@@ -32,6 +32,12 @@ else ()
     endif ()
 endif ()
 
+# Haiku can't find "gl" for what would seem to be no reason, even with the appropriate devel package.
+# It's software anyways -- no harm done, really
+if (HAIKU)
+    set(DISABLE_OPENGL ON)
+endif ()
+
 if (NOT DISABLE_OPENGL)
     # GL doesn't work nicely with macOS, while find_package doesn't work with multiarch on Ubuntu.
     if (APPLE)

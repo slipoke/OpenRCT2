@@ -56,6 +56,11 @@ if (NOT DISABLE_NETWORK OR NOT DISABLE_HTTP)
         else ()
             target_link_libraries(${PROJECT_NAME} ${OPENSSL_LIBRARIES})
         endif()
+
+        # Haiku needs us to link with "network" additionally for sockets and such, I guess
+        if(HAIKU)
+            target_link_libraries(${PROJECT_NAME} network)
+        endif()
     endif()
 endif ()
 
@@ -158,7 +163,8 @@ if (MINGW)
     target_link_libraries(${PROJECT_NAME} -fstack-protector-strong)
 endif()
 
-if (UNIX AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+# Neither BSD or Haiku should be using -ldl
+if (UNIX AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "BSD|Haiku")
     # Include libdl for dlopen
     target_link_libraries(${PROJECT_NAME} dl)
 endif ()

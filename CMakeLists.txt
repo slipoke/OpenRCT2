@@ -348,7 +348,8 @@ else ()
         set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     endif ()
 
-    if (APPLE AND NOT USE_MMAP)
+    # On Haiku, using PIC breaks things as "executables" are truly just shared libs with non-null entry points
+    if ((APPLE AND NOT USE_MMAP) OR HAIKU)
         set(CMAKE_POSITION_INDEPENDENT_CODE OFF)
     else ()
         set(CMAKE_POSITION_INDEPENDENT_CODE ON)
