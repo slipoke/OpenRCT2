@@ -1,4 +1,13 @@
+# This was a port of OpenRCT2 to Haiku.
+I (and the OpenRCT2 team) intended for it to be merged into mainline, but I simply lost time to work on it. It works and runs fully. It, however, cannot be bundled into an .hpkg, and was never converted to HaikuPorts format, which is why it never became official.
 
+Still, if you build it, you can play it. It works fine, but as a binary, which isn't very Haiku-ish.
+
+I won't be working on this anymore, but it's fully functional*
+
+*\* from my testing*
+
+Original README continues here.
 
 <p align="center">
   <a href="https://openrct2.io">
